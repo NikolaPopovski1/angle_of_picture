@@ -3,7 +3,7 @@ import scipy.ndimage as ndimage
 import matplotlib.pyplot as plt
 
 
-slika = plt.imread('image.jpg')[:, :, :3]
+slika = plt.imread('images/forest_horison.jpg')[:, :, :3]
 slika = (slika).mean(2)
 
 f = np.ones((9, 9), dtype=np.float32)
@@ -12,7 +12,7 @@ f /= f.sum()
 slika_conv_smoothed = ndimage.convolve(slika, f, mode='constant', cval=0.0)
 
 # Define sigma and generate the Gaussian kernel
-sigma = 20.0
+sigma = 10.0
 velikost_jedra = int(3 * sigma)
 x = np.arange(-velikost_jedra, velikost_jedra + 1)
 X, Y = np.meshgrid(x, x)
@@ -42,8 +42,8 @@ slika_rob_mag = (slika_dx**2 + slika_dy**2)**0.5 # samo pitagorov izrek
 slika_rob_smer = np.arctan2(slika_dy, slika_dx)
 
 # Apply Sobel filters to the image
-slika_sobel_dx = ndimage.convolve(slika, jedro_sobel_dx, mode='constant', cval=0.0)
-slika_sobel_dy = ndimage.convolve(slika, jedro_sobel_dy, mode='constant', cval=0.0)
+slika_sobel_dx = ndimage.convolve(slika_conv_gaussian, jedro_sobel_dx, mode='constant', cval=0.0)
+slika_sobel_dy = ndimage.convolve(slika_conv_gaussian, jedro_sobel_dy, mode='constant', cval=0.0)
 
 # Compute the magnitude of the gradient
 slika_sobel = np.hypot(slika_sobel_dx, slika_sobel_dy)
