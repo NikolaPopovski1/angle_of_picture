@@ -39,12 +39,13 @@ def orientacija_horizonta(slika: np.ndarray) -> float:
     # Convert to unsigned 8-bit integer type for proper image representation
     slika_sobel = slika_sobel.astype(np.uint8)
     """
+    
     # razdelimo histogram na 16 predalckov med vrednostmi -pi, pi
     hist_bins = np.linspace(-np.pi, np.pi, 100)
     # razdelimo piksle v predalcke po kotu roba, pomnozeno z weightom magnitude ki nam pove kak mocn je rob
     # hist_smeri_x, hist_smeri_y = np.histogram(slika_sobel, bins=hist_bins, weights=slika_rob_mag)
     # Tried both methods for edge detection but the results are not as expected
-    hist_smeri_x, hist_smeri_y = np.histogram(slika_rob_smer, bins=hist_bins, weights=slika_rob_mag)
+    hist_smeri_x, _ = np.histogram(slika_rob_smer, bins=hist_bins, weights=slika_rob_mag)
 
     # Find the index of the maximum value
     max_y_index = np.argmax(hist_smeri_x)
@@ -52,6 +53,10 @@ def orientacija_horizonta(slika: np.ndarray) -> float:
     max_x = hist_bins[max_y_index]
     # Find the value next to it
     max_x_plus_one = hist_bins[max_y_index + 1]
+    
+    result = (max_x_plus_one + max_x) * 0.5
+    
+    """
     print(f"Maximum value on the x-axis (bin edge in rad): {max_x}")
     # Find the second largest value in the histogram counts
     sorted_hist_smeri_x = np.sort(hist_smeri_x)[::-1]  # Sort in descending order
@@ -62,7 +67,21 @@ def orientacija_horizonta(slika: np.ndarray) -> float:
     print(f"Second largest value on the x-axis (bin edge in rad): {second_largest_x}")
     print(f"")
     print(f"Maximum and value next to it combined and devided by 2:")
-    print(f"Angle in rad: {(max_x_plus_one + max_x) * 0.5}")
-    print(f"Agle in degrees: {(max_x_plus_one + max_x) * 0.5 * 180 / np.pi}")
+    print(f"Angle in rad: {result}")
+    print(f"Agle in degrees: {result * 180 / np.pi}")
     #max_y = x[np.where(hist_smeri_y == hist_smeri_y.max())]
     #print(f"Maximum: {hist_bins[max_y]}")
+
+
+    # Plot the image and histogram
+    plt.figure(figsize=(12, 6))
+    plt.subplot(1, 2, 1)
+    plt.imshow(slika, cmap='gray')
+    plt.axis('off')
+    plt.subplot(1, 2, 2)
+    # 16 bins, count is height, width is the difference between two edges
+    plt.bar(hist_bins[:-1], hist_smeri_x, width=hist_bins[2] - hist_bins[1])
+    plt.show()
+    """
+
+    return result
