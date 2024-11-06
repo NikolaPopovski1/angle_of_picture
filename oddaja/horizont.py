@@ -27,10 +27,10 @@ def orientacija_horizonta(slika: np.ndarray) -> float:
     #"""
 
 
-
     slika_rob_mag = (slika_dx**2 + slika_dy**2)**0.5 # samo pitagorov izrek
     # slika_rob_smer = np.arctan2(slika_dy, slika_dx)
     slika_rob_smer = np.arctan2(slika_dx, slika_dy)
+
     """
     # Apply Sobel filters to the image
     slika_sobel_dx = ndimage.convolve(slika_conv_gaussian, jedro_sobel_dx)
@@ -50,15 +50,13 @@ def orientacija_horizonta(slika: np.ndarray) -> float:
     # Tried both methods for edge detection but the results are not as expected
     hist_smeri_x, hist_smeri_y = np.histogram(slika_rob_smer, bins=hist_bins, weights=slika_rob_mag)
 
-    # Find the index of the maximum value
+
     max_y_index = np.argmax(hist_smeri_x)
-    # Find the corresponding bin edge (x-axis)
     max_x = hist_bins[max_y_index]
-    # Find the value next to it
     max_x_plus_one = hist_bins[max_y_index + 1]
     
-    result = (max_x_plus_one + max_x) * 0.5
-    
+    result = (max_x_plus_one + max_x) * 0.5 * -1
+
     """
     print(f"Maximum value on the x-axis (bin edge in rad): {max_x}")
     # Find the second largest value in the histogram counts
@@ -74,8 +72,7 @@ def orientacija_horizonta(slika: np.ndarray) -> float:
     print(f"Agle in degrees: {result * 180 / np.pi}")
     #max_y = x[np.where(hist_smeri_y == hist_smeri_y.max())]
     #print(f"Maximum: {hist_bins[max_y]}")
-
-
+    
     # Plot the image and histogram
     plt.figure(figsize=(12, 6))
     plt.subplot(1, 2, 1)
@@ -87,4 +84,10 @@ def orientacija_horizonta(slika: np.ndarray) -> float:
     plt.show()
     """
     
+
+    if result > np.pi / 2:
+        result -= np.pi
+    elif result < -np.pi / 2:
+        result += np.pi
+
     return result

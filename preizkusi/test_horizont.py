@@ -1,13 +1,11 @@
 import unittest
 import numpy as np
 from matplotlib.pyplot import imread
-
 import pathlib
 
-TEST_PATH=pathlib.Path(__file__).resolve().parent
+TEST_PATH = pathlib.Path(__file__).resolve().parent
 
 from horizont import orientacija_horizonta
-
 
 class TestHorizont(unittest.TestCase):
     def pozeni_test_za_sliko(self,
@@ -36,3 +34,6 @@ class TestHorizont(unittest.TestCase):
 
     def test_orientacija_horizonta_primer_3(self):
         self.pozeni_test_za_sliko(TEST_PATH.joinpath('primer_0.25_pi_rad.png'), 0.25*np.pi, -0.25*np.pi)
+
+if __name__ == '__main__':
+    unittest.main()
