@@ -3,8 +3,11 @@ import scipy.ndimage as ndimage
 import matplotlib.pyplot as plt
 
 def orientacija_horizonta(slika: np.ndarray) -> float:
+    # Convert to grayscale by averaging the RGB channels
+    slika = slika.mean(2)
+
     # Apply gaussian filter from ndimage library
-    slika_conv_gaussian = ndimage.gaussian_filter(slika, sigma=10,radius=51,mode="mirror")
+    slika_conv_gaussian = ndimage.gaussian_filter(slika, sigma=10)
 
 
     jedro_sobel_dx = np.array([
@@ -45,7 +48,7 @@ def orientacija_horizonta(slika: np.ndarray) -> float:
     # razdelimo piksle v predalcke po kotu roba, pomnozeno z weightom magnitude ki nam pove kak mocn je rob
     # hist_smeri_x, hist_smeri_y = np.histogram(slika_sobel, bins=hist_bins, weights=slika_rob_mag)
     # Tried both methods for edge detection but the results are not as expected
-    hist_smeri_x, _ = np.histogram(slika_rob_smer, bins=hist_bins, weights=slika_rob_mag)
+    hist_smeri_x, hist_smeri_y = np.histogram(slika_rob_smer, bins=hist_bins, weights=slika_rob_mag)
 
     # Find the index of the maximum value
     max_y_index = np.argmax(hist_smeri_x)
@@ -56,7 +59,6 @@ def orientacija_horizonta(slika: np.ndarray) -> float:
     
     result = (max_x_plus_one + max_x) * 0.5
     
-    """
     print(f"Maximum value on the x-axis (bin edge in rad): {max_x}")
     # Find the second largest value in the histogram counts
     sorted_hist_smeri_x = np.sort(hist_smeri_x)[::-1]  # Sort in descending order
@@ -82,6 +84,5 @@ def orientacija_horizonta(slika: np.ndarray) -> float:
     # 16 bins, count is height, width is the difference between two edges
     plt.bar(hist_bins[:-1], hist_smeri_x, width=hist_bins[2] - hist_bins[1])
     plt.show()
-    """
 
     return result
